@@ -433,15 +433,15 @@ for ax, fr_label in zip(axes, fr_order):
                     stars = "*"
                 ax.annotate(
                     stars, xy=(x_pos, y_val), xytext=(0, star_y_offset), textcoords="offset points",
-                    fontsize=11, fontweight="bold", color="dimgrey", ha="center", va="bottom", clip_on=True,
+                    fontsize=15, fontweight="bold", color="dimgrey", ha="center", va="bottom", clip_on=True,
                 )
     # Friedman + Nemenyi significance, drawn as merged horizontal lines
     # (row-merge and column-merge, see merged_significance_lines) with a
     # tick mark at every model each line flags (skipped for "Single
     # holdout", which has no repeated folds to test). Multiple lines in the
     # same CV-scheme group are stacked into non-overlapping tracks.
-    line_gap = 45  # vertical gap (RMSE units) between the tallest error bar in a group and its first line - leaves room for the stars above it
-    line_step = 70  # vertical spacing between stacked line tracks - wide enough for the alternating stars to clear the neighbouring track
+    line_gap = 50  # vertical gap (RMSE units) between the tallest error bar in a group and its first line - leaves room for the stars above it
+    line_step = 85  # vertical spacing between stacked line tracks - wide enough for the alternating stars to clear the neighbouring track
     for cv_idx, cv_scheme in enumerate(cv_order):
         lines = sig_lines.get((fr_label, cv_scheme), [])
         if not lines:
@@ -479,7 +479,7 @@ for ax, fr_label in zip(axes, fr_order):
             # error bars already reach/exceed ylim_top still render inside the visible axes
             y_line = min(y_unclamped, ylim_top - 10 - (len(track_ends) - 1 - level) * line_step)
             ax.plot([x_positions[left_idx], x_positions[right_idx]], [y_line, y_line],
-                    color="dimgrey", linewidth=1.1, clip_on=True, zorder=1)
+                    color="dimgrey", linewidth=1.5, clip_on=True, zorder=1)
             # a line with only one flagged pair gets its star centred on the line instead
             # of at the tick's own x-position, which would otherwise sit at one end of it
             single_pair = sum(p is not None for p in tick_pvals) == 1
@@ -487,7 +487,7 @@ for ax, fr_label in zip(axes, fr_order):
             star_count = 0  # alternates star placement above/below the line so closely-spaced ticks don't overlap
             for tick_idx, p_value in zip(ticks, tick_pvals):
                 ax.plot([x_positions[tick_idx], x_positions[tick_idx]], [y_line - 7, y_line],
-                        color="dimgrey", linewidth=1.1, clip_on=True, zorder=1)
+                        color="dimgrey", linewidth=1.5, clip_on=True, zorder=1)
                 if p_value is None:  # the line's own reference model (anchor/shared target) - no self p-value
                     continue
                 # significance stars for this specific tick, using the conventional
@@ -508,7 +508,7 @@ for ax, fr_label in zip(axes, fr_order):
                 star_x = mid_x if single_pair else x_positions[tick_idx]
                 ax.annotate(
                     stars, xy=(star_x, y_line), xytext=offset, textcoords="offset points",
-                    fontsize=11, fontweight="bold", color="dimgrey", ha="center", va=va, clip_on=True,
+                    fontsize=15, fontweight="bold", color="dimgrey", ha="center", va=va, clip_on=True,
                 )
                 star_count += 1
     # shared marker for the single lowest RMSE value found in either panel
@@ -553,8 +553,8 @@ legend._legend_box.align = "left"  # left-align the "Model" title above the entr
 fig.text(
     left_x, -0.23,
     "Lines: Friedman test + Nemenyi post-hoc; a line from a model to its tick marks flags model(s) it is significantly different from \n(within the same panel and evaluation condition).\n"
-    "Stars above each tick: Nemenyi p-value for that specific pair.\n"
-    "Stars above a point: significant with-vs-without feature-reduction RMSE difference for that model (Wilcoxon signed-rank test, \nHolm\u2013Bonferroni corrected, \u03b1 = 0.05).\n* p < 0.05, ** p < 0.01, *** p < 0.001",
+    "Asterisks above each tick: Nemenyi p-value for that specific pair.\n"
+    "Asterisks above a point: significant with-vs-without feature-reduction RMSE difference for that model (Wilcoxon signed-rank test, \nHolm\u2013Bonferroni corrected, \u03b1 = 0.05).\n* p < 0.05, ** p < 0.01, *** p < 0.001",
     ha="left", va="top", fontsize=18, color="black",
 )
 
